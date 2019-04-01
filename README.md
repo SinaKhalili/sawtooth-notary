@@ -1,10 +1,10 @@
-# Sawtooth Notary
-Application for distrbuted systems class
+# Hyperledger Sawtooth Notary
+Application for distrbuted systems class to create a simple notary to record house sales on the blockchain with hyperledger sawtooth.
 
 
-Run with `docker-compose up --build` in root directory
+Run with `docker-compose up --build` in root directory. It should start the validator.
 
-Attach yourself to be the client with  `docker exec -it notary-client bash`
+Attach to the client with  `docker exec -it notary-client bash` in a seperate terminal.  
 
 
 There is only a single command to add a sale to the blockchain.
