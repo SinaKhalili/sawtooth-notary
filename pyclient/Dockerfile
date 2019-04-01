@@ -60,9 +60,9 @@ RUN \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /project/cookiejar/pyclient
+WORKDIR /project/notary/pyclient
 
-ENV PATH "$PATH:/project/cookiejar/pyclient"
+ENV PATH "$PATH:/project/notary/pyclient"
 
 EXPOSE 3000
 

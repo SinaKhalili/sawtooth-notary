@@ -8,7 +8,9 @@ Things I changed:
         * Replaced cookiejar with notary
     * `cookiejar_tp.py` -> `notary_tp.py`
         * changed shit in notary_tp.py
-
+* `pyclient`
+  * `cookiejar_tp.py` -> `notary_client.py`
+  * Still working on functions for notary client
     NOTE: I'm splitting on '{' 
 
     changed url field in setup

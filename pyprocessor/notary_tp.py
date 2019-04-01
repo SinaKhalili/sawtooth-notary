@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 FAMILY_NAME = "notary"
 # TF Prefix is first 6 characters of SHA-512("notary"), !a4d219
-#                                                     = 58504b5
+#                                                     =  58504b5
 
 def _hash(data):
     '''Compute the SHA-512 hash and return the result as hex characters.'''
@@ -84,18 +84,17 @@ class NotaryTransactionHandler(TransactionHandler):
 
         # Get the signer's public key, sent in the header from the client.
         from_key = header.signer_public_key
-
         # Perform the action.
         LOGGER.info("Buyer = %s.", buyer_name)
         LOGGER.info("Seller = %s.", seller_name)
         LOGGER.info("House = %s.", house_id)
 
         stringdata = '{' + buyer_name + seller_name + house_id + '}'
-        self._make_bake(context, stringdata, from_key)
+        self._make_sale(context, stringdata, from_key)
         
 
     @classmethod
-    def _make_bake(cls, context, stringdata, from_key):
+    def _make_sale(cls, context, stringdata, from_key):
         '''Bake (add) "stringdata" cookies.'''
         notary_address = _get_notary_address(from_key)
         LOGGER.info('Got the key %s and the notary address %s.',

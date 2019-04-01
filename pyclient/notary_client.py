@@ -1,20 +1,5 @@
-# Copyright 2018 Intel Corporation
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ------------------------------------------------------------------------------
 '''
-CookieJarClient class interfaces with Sawtooth through the REST API.
-It accepts input from a client CLI/GUI/BUI or other interface.
+Interfaces with Sawtooth through the REST API.
 '''
 
 import hashlib
@@ -35,17 +20,13 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader
 from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
 # The Transaction Family Name
-FAMILY_NAME = 'cookiejar'
+FAMILY_NAME = 'notary'
 # TF Prefix is first 6 characters of SHA-512("cookiejar"), a4d219
 
 def _hash(data):
     return hashlib.sha512(data).hexdigest()
 
-class CookieJarClient(object):
-    '''Client Cookie Jar class
-
-    Supports "bake", "eat", and "count" functions.
-    '''
+class NotaryClient(object):
 
     def __init__(self, base_url, key_file=None):
         '''Initialize the client class.
@@ -84,39 +65,16 @@ class CookieJarClient(object):
     # 1. Do any additional handling, if required
     # 2. Create a transaction and a batch
     # 2. Send to REST API
-    def bake(self, amount):
-        '''Bake amount cookies for the cookie jar.'''
-        return self._wrap_and_send("bake", amount, wait=10)
 
-    def eat(self, amount):
-        '''Eat amount cookies from the cookie jar.'''
-        try:
-            ret_amount = self._wrap_and_send("eat", amount, wait=10)
-        except Exception:
-            raise Exception('Encountered an error during eat')
-        return ret_amount
-
-    def count(self):
-        '''Count the number of cookies in the cookie jar.'''
-        result = self._send_to_rest_api("state/{}".format(self._address))
-        try:
-            return base64.b64decode(yaml.safe_load(result)["data"])
-        except BaseException:
-            return None
-			
-    def clear(self):
-        '''Empty the cookie jar.'''
-        try:
-            ret_amount = self._wrap_and_send("clear", 0, wait=10)
-        except Exception:
-            raise Exception('Encountered an error during clear')
-        return ret_amount
+    # Look at this definition for the thing eh
+    # def bake(self, amount):
+    #     '''Bake amount cookies for the cookie jar.'''
+    #     return self._wrap_and_send("bake", amount, wait=10)
 
     def _send_to_rest_api(self, suffix, data=None, content_type=None):
-        '''Send a REST command to the Validator via the REST API.
-
-           Called by count() &  _wrap_and_send().
-           The latter caller is made on the behalf of bake() & eat().
+        '''
+           Send a REST command to the Validator via the REST API.
+           Called by _wrap_and_send().
         '''
         url = "{}/{}".format(self._base_url, suffix)
         print("URL to send to REST API is {}".format(url))
@@ -165,15 +123,13 @@ class CookieJarClient(object):
             return result
 
 
-    def _wrap_and_send(self, action, amount, wait=None):
+    def _wrap_and_send(self, buyer, seller, house, wait=None):
         '''Create a transaction, then wrap it in a batch.
-
            Even single transactions must be wrapped into a batch.
-           Called by bake() and eat().
         '''
 
         # Generate a CSV UTF-8 encoded string as the payload.
-        raw_payload = ",".join([action, str(amount)])
+        raw_payload = "{".join([buyer, seller, house])
         payload = raw_payload.encode() # Convert Unicode to bytes
 
         # Construct the address where we'll store our state.
