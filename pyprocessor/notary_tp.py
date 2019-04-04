@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 FAMILY_NAME = "notary"
 # TF Prefix is first 6 characters of SHA-512("notary"), !a4d219
-#                                                     =  58504b5
+#                                                     =  58504b
 
 def _hash(data):
     '''Compute the SHA-512 hash and return the result as hex characters.'''
@@ -116,7 +116,7 @@ class NotaryTransactionHandler(TransactionHandler):
         if len(addresses) < 1:
             raise InternalError("State Error")
         context.add_event(
-            event_type="notary/add",
+            event_type="notary/sale",
             attributes=[("sale-added", stringdata)])
 
 def main():

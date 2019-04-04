@@ -1,19 +1,5 @@
 #! /usr/bin/env python3
 
-# Copyright 2017-2018 Intel Corporation
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ------------------------------------------------------------------------------
 '''Sample Sawtooth event client
 
    To run, start the validator then type the following on the command line:
@@ -25,6 +11,7 @@
 
 import sys
 import traceback
+import zmq
 from sawtooth_sdk.messaging.stream import Stream
 from sawtooth_sdk.protobuf import events_pb2
 from sawtooth_sdk.protobuf import client_event_pb2
@@ -35,25 +22,23 @@ from sawtooth_sdk.protobuf.validator_pb2 import Message
 #DEFAULT_VALIDATOR_URL = 'tcp://localhost:4004'
 # For Docker access:
 DEFAULT_VALIDATOR_URL = 'tcp://validator:4004'
-# Calculated from the 1st 6 characters of SHA-512("cookiejar"):
-COOKIEJAR_TP_ADDRESS_PREFIX = '58504b'
+# Calculated from the 1st 6 characters of SHA-512("notary"):
+NOTARY_TP_ADDRESS_PREFIX = '58504b'
 
 
 def listen_to_events(delta_filters=None):
-    '''Listen to cookiejar state-delta events.'''
+    '''Listen to notary state-delta events.'''
 
     # Subscribe to events
     block_commit_subscription = events_pb2.EventSubscription(
         event_type="sawtooth/block-commit")
     state_delta_subscription = events_pb2.EventSubscription(
         event_type="sawtooth/state-delta", filters=delta_filters)
-    bake_subscription = events_pb2.EventSubscription(
-        event_type="cookiejar/bake")
-    eat_subscription = events_pb2.EventSubscription(
-        event_type="cookiejar/eat")
+    sale_subscription = events_pb2.EventSubscription(
+        event_type="notary/sale")
     request = client_event_pb2.ClientEventsSubscribeRequest(
         subscriptions=[block_commit_subscription, state_delta_subscription, 
-        bake_subscription, eat_subscription])
+        sale_subscription])
 
     # Send the subscription request
     stream = Stream(DEFAULT_VALIDATOR_URL)
@@ -96,9 +81,31 @@ def listen_to_events(delta_filters=None):
 def main():
     '''Entry point function for the client CLI.'''
 
+    subscription = EventSubscription(
+        event_type="sawtooth/state-delta",
+        filters=[
+            EventFilter(
+                key="address",
+                match_string=
+                NOTARY_TP_ADDRESS_PREFIX + ".*",
+                filter_type=EventFilter.REGEX_ANY
+            )
+        ]
+    )
+
+
+#   subscription = EventSubscription(
+#     event_type="sawtooth/state-delta",
+#     filters=[
+#         # Filter to only addresses in the "xo" namespace using a regex
+#         EventFilter(
+#             key="address",
+#             match_string="5b7349.*",
+#             filter_type=EventFilter.REGEX_ANY)
+#     ])
     filters = [events_pb2.EventFilter(key="address",
                                       match_string=
-                                      COOKIEJAR_TP_ADDRESS_PREFIX + ".*",
+                                      NOTARY_TP_ADDRESS_PREFIX + ".*",
                                       filter_type=events_pb2.
                                       EventFilter.REGEX_ANY)]
 
