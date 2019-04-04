@@ -6,8 +6,7 @@ services:
     # doesn't matter
     container_name: notary-processor
     build:
-      context:
-      # look here
+      context: .
       dockerfile: ./pyprocessor/Dockerfile
       args:
         - http_proxy

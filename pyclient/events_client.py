@@ -36,7 +36,7 @@ from sawtooth_sdk.protobuf.validator_pb2 import Message
 # For Docker access:
 DEFAULT_VALIDATOR_URL = 'tcp://validator:4004'
 # Calculated from the 1st 6 characters of SHA-512("cookiejar"):
-COOKIEJAR_TP_ADDRESS_PREFIX = 'a4d219'
+COOKIEJAR_TP_ADDRESS_PREFIX = '58504b'
 
 
 def listen_to_events(delta_filters=None):

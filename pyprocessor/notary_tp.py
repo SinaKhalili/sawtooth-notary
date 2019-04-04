@@ -41,7 +41,6 @@ class NotaryTransactionHandler(TransactionHandler):
     Transaction Processor class for the notary Transaction Family.
 
     This TP communicates with the Validator using the accept/get/set functions.
-    This implements functions to "bake" or "eat" cookies in a cookie jar.
     '''
     def __init__(self, namespace_prefix):
         '''Initialize the transaction handler class.
@@ -95,7 +94,6 @@ class NotaryTransactionHandler(TransactionHandler):
 
     @classmethod
     def _make_sale(cls, context, stringdata, from_key):
-        '''Bake (add) "stringdata" cookies.'''
         notary_address = _get_notary_address(from_key)
         LOGGER.info('Got the key %s and the notary address %s.',
                     from_key, notary_address)

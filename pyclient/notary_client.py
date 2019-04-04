@@ -21,7 +21,6 @@ from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
 # The Transaction Family Name
 FAMILY_NAME = 'notary'
-# TF Prefix is first 6 characters of SHA-512("cookiejar"), a4d219
 
 def _hash(data):
     return hashlib.sha512(data).hexdigest()
@@ -57,7 +56,7 @@ class NotaryClient(object):
             .new_signer(private_key)
         self._public_key = self._signer.get_public_key().as_hex()
 
-        # Address is 6-char TF prefix + hash of "mycookiejar"'s public key
+        # Address is 6-char TF prefix + hash of "mynotary"'s public key
         self._address = _hash(FAMILY_NAME.encode('utf-8'))[0:6] + \
             _hash(self._public_key.encode('utf-8'))[0:64]
 
@@ -67,9 +66,9 @@ class NotaryClient(object):
     # 2. Send to REST API
 
     # Look at this definition for the thing eh
-    # def bake(self, amount):
-    #     '''Bake amount cookies for the cookie jar.'''
-    #     return self._wrap_and_send("bake", amount, wait=10)
+    def sale(self, buyer, seller, houseinfo):
+        '''record a sale'''
+        return self._wrap_and_send(buyer, seller, houseinfo, wait=10)
 
     def _send_to_rest_api(self, suffix, data=None, content_type=None):
         '''
