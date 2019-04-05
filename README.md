@@ -9,7 +9,9 @@ Attach to the client with  `docker exec -it notary-client bash` in a seperate te
 
 There is only a single command to add a sale to the blockchain.
 
-`./notary-client "First name" "Last name" "House ID"`
+`./notary-client`
+
+And you will prompted to enter the name of the buyer, seller, and house information. 
 
 Useful docs reference [here](https://sawtooth.hyperledger.org/docs/core/releases/1.0.1/introduction.html)
 
